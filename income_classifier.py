@@ -36,6 +36,10 @@ class SvmIncomeClassifier:
         # Splitting categorical data and Numerical data
         cate_data=new_data[[1,3,5,6,7,8,9,13]]
         num_data=new_data[[0,2,4,10,11,12]]
+        #MARK THIS POINT FOR WORKING ON LATER (scaling)
+
+
+
         # Adding a y value to store results
         y=new_data[[14]]
         # Creating a sparse matrix using get_dummies()
@@ -66,10 +70,10 @@ class SvmIncomeClassifier:
         random.seed(37)
         # The code written should lopp through the parameter and find the best fit
         param_set = [
-                     {'kernel': 'rbf', 'C': 1, 'degree': 1},
-                     {'kernel': 'rbf', 'C': 1, 'degree': 3},
-                     {'kernel': 'rbf', 'C': 1, 'degree': 5},
-                     {'kernel': 'rbf', 'C': 1, 'degree': 7},
+                     {'kernel': 'rbf', 'C': 1, 'degree': 1}
+                     #{'kernel': 'rbf', 'C': 1, 'degree': 3},
+                     #{'kernel': 'rbf', 'C': 1, 'degree': 5},
+                     #{'kernel': 'rbf', 'C': 1, 'degree': 7},
         ]
         clf = SVC()
         for j in param_set:
@@ -84,14 +88,11 @@ class SvmIncomeClassifier:
                 training_y.as_matrix()
                 testing_x.as_matrix()
                 testing_y.as_matrix()
-                clf.fit(training_x,training_y)
-                SVC(j['C'],j['kernel'],j['degree'])
-                np.reshape(testing_y,(len(testing_y),1))
-                np.c_[ testing_x, testing_y ]
-                best_model=clf.predict(testing_x)
-                print best_model
-
-                
+                clf=SVC(j['C'],j['kernel'],j['degree'])
+                model=clf.fit(training_x,training_y)
+                if best_score<=clf.score(testing_x,testing_y):
+                    best_score=clf.score(testing_x,testing_y)
+                    best_model=model
         return best_model, best_score
 
     def predict(self, test_csv, trained_model):
